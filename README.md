@@ -3,7 +3,7 @@
 ### Usage:   
    
 To add a new value in the storage:   
-`cmdkeyx.exe /add:<name></name> /pass:<value>`   
+`cmdkeyx.exe /add:<name> /pass:<value>`   
    
 To retrieve a value from the storage:   
 `cmdkeyx.exe /get:<name>`   
