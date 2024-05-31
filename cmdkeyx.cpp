@@ -23,7 +23,7 @@ bool write(const wstring name, const wstring value) {
     cred.TargetName = (LPWSTR) name.c_str();
     cred.CredentialBlobSize = value.size() * sizeof(wchar_t);
     cred.CredentialBlob = (LPBYTE)value.data();
-    cred.Persist = CRED_PERSIST_SESSION;
+    cred.Persist = CRED_PERSIST_LOCAL_MACHINE;
     cred.UserName = nullptr;
 
     return CredWriteW( & cred, 0);
@@ -42,29 +42,37 @@ wstring read(const wstring name) {
 
 int wmain(int argc, wchar_t* argv[])
 {
-    std::setlocale(LC_ALL, "");
-    auto params = args::parse(argc, argv);
+	std::setlocale(LC_ALL, "");
+	auto params = args::parse(argc, argv);
 
-    // Print the parsed arguments.
-    for (const auto &param : params) {
-        if (param.first == L"add") {
-            if (param.second.empty()) {
-                std::printf("The name of the targed is not specified, syntax: /add:<target_name>");
-                return -1;
-            }
-            else {
-                auto pass = args::find(params, L"pass");
-                if (pass.empty()) {
-                    std::printf("Password is not specified, syntax: /pass:<password_value>");
-                    return -1;
-                }
-                else {
-                    write(param.second, pass);
-                    std::wcout << read(param.second) << std::endl;
-                }
-            }
-        }
-    }
+	// Print the parsed arguments.
+	for (const auto& param : params) {
+		if (param.first == L"add") {
+			if (param.second.empty()) {
+				std::printf("The name of the targed is not specified, syntax: /add:<target_name>");
+				return -1;
+			}
+			else {
+				auto pass = args::find(params, L"pass");
+				if (pass.empty()) {
+					std::printf("Password is not specified, syntax: /pass:<password_value>");
+					return -1;
+				}
+				else {
+					write(param.second, pass);
+				}
+			}
+		}
+		else if (param.first == L"get") {
+			if (param.second.empty()) {
+				std::printf("The name of the targed is not specified, syntax: /get:<target_name>");
+				return -1;
+			}
+			else {
+				std::wcout << read(param.second) << std::endl;
+			}
+		}
+	}
 
-    return 0;
+	return 0;
 }
